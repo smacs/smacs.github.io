@@ -1,0 +1,11 @@
+<div class="container">
+  <section class="name">
+    <a href="/">{{ site.title }}</a>
+  </section>
+  <ul class="social">
+    {% if site.subscribe_rss %}<li><a href="{{ root_url }}{{ site.subscribe_rss }}" class="social-icon foundicon-rss"></a></li>{% endif %}
+    {% if site.twitter_user %}<li><a href="https://twitter.com/{{ site.twitter_user }}" class="social-icon foundicon-twitter"></a></li>{% endif %}
+    {% if site.github_user %}<li><a href="https://github.com/{{ site.github_user }}" class="social-icon foundicon-github"></a></li>{% endif %}
+  </ul>
+  <nav role="navigation">{% include navigation.html %}</nav>
+</div> <!-- .container -->

@@ -1,0 +1,16 @@
+---
+layout: default
+single: true
+---
+
+<div id="content">
+<article class="entry" role="article">
+  {% include article.html %}
+</article>
+</div>
+{% if site.disqus_short_name and page.comments == true %}
+<section id="comment">
+  <h1 class="title">Comments</h1>
+  <div id="disqus_thread" aria-live="polite">{% include disqus_thread.html %}</div>
+</section>
+{% endif %}

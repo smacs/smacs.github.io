@@ -1,0 +1,102 @@
+#!/usr/bin/env ruby
+
+require 'redcarpet'
+require 'ansi'
+require 'pygments'
+
+module Redcarpet
+  module Render
+    class Ansi < Base
+
+      def normal_text(text)
+        text.strip
+      end
+
+      def block_code(code, language)
+        Pygments.highlight(code, :lexer => language, :formatter => 'terminal') + "\n\n"
+      end
+
+      def codespan(code)
+        Pygments.highlight(code, :lexer => 'scheme', :formatter => 'terminal')
+      end
+
+      def header(title, level)
+
+        case level
+        when 1
+          ansi(title, :red)
+        when 2
+          ansi(title, :black, :on_red)
+        when 3
+          ansi(title, :cyan)
+        end + "\n\n"
+      end
+
+      def double_emphasis(text)
+        ansi(text, :yellow)
+      end
+
+      def emphasis(text)
+        " " + ansi(text, :white, :on_black) + " "
+      end
+
+      def linebreak
+        ""
+      end
+
+      def paragraph(text)
+        "#{text}\n\n"
+      end
+
+      def list(content, list_type)
+        case list_type
+        when :ordered
+          @order = 0
+          "#{content}\n"
+        when :unordered
+          "#{content}\n"
+        end
+      end
+
+      def list_item(content, list_type)
+        case list_type
+        when :ordered
+          @order =(@order or 0) + 1
+          "  #{@order}. #{content.strip}\n"
+        when :unordered
+          "  + #{content.strip}\n"
+        end
+      end
+    end
+  end
+end
+
+markdown = Redcarpet::Markdown.new(Redcarpet::Render::Ansi, :fenced_code_blocks => true)
+
+s = <<MARKDOWN
+# Head 1
+## Head 2
+### Head 3
+this
+
+1. ord1
+1. ord2
+
+is *bold* **indeed**
+
+- item1
+- item2
+
+1. ord1
+1. ord2
+
+``` ruby
+def foo
+    puts "Hello"
+end
+```
+MARKDOWN
+
+unless ARGV.empty?
+  puts markdown.render(File.read(ARGV.first))
+end
