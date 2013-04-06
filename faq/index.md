@@ -267,6 +267,9 @@ bzr branch --stacked http://bzr.savannah.gnu.org/r/emacs/trunk
     速查手册，info里面显示为Elisp。
 - 《Writing GNU Emacs Extensions》by Bob Glickstein, O'REILLY
 
-### 一个收集大量Emacs配置文件的网站
+### 网络资源
 
-http://www.dotemacs.de/
+- [一个收集大量Emacs配置文件的网站](http://www.dotemacs.de/)
+- [Emacs中文网](http://emacser.com): 含有多位Emacser的高质量的文章
+- [DEA](http://emacser.com/dea.htm): ahei的Emacs配置大全
+- QQ群: 59134186 18096422. 入群最好把名字改为水木ID吧
