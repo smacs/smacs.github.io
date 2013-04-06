@@ -1,6 +1,7 @@
 author: Emacs@SMTH
 url: http://smacs.github.io
 title: 水木社区Emacs版
+disqus_short_name: emacs-smth
 
 pygments:    true
 markdown:    redcarpet
