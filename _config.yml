@@ -1,16 +1,9 @@
 author: Emacs@SMTH
-safe: true
 url: http://smacs.github.io
 title: 水木社区Emacs版
 
-source: .
-destination: ./_site
-
-future:      true
-lsi:         false
 pygments:    true
 markdown:    redcarpet
-permalink:   date
 
 redcarpet:
-  extensions: [no_intra_emphasis, tables, fenced_code_blocks, autolink, strikethrough, lax_spacing, superscript]
+  extensions: [no_intra_emphasis, tables, fenced_code_blocks, autolink, space_after_headers]
