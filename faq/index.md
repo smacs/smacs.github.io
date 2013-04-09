@@ -1,7 +1,6 @@
 ---
 layout: page
 title: 水木社区Emacs版FAQ
-comments: true
 ---
 
 ## General

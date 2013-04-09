@@ -8,7 +8,7 @@ single: true
   {% include article.html %}
 </article>
 </div>
-{% if site.disqus_short_name and page.comments == true %}
+{% if site.disqus_short_name and page.comments != false %}
 <section id="comment">
   <h1 class="title">Comments</h1>
   <div id="disqus_thread" aria-live="polite">{% include disqus_thread.html %}</div>

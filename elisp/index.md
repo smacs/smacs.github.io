@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Emacs Lisp 简明教程
+comments: false
 ---
 
 > 这是[叶文彬(水木ID: happierbee)](http://www.wenb.in/)写的一份Emacs Lisp的教程, 深入浅出, 非常适合初学者.
