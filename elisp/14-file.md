@@ -81,12 +81,8 @@ write-region 可以把缓冲区中的一部分写入到指定文件中。如果�
 区和文件关联，lockname 则是文件锁定的名字，mustbenew 确保文件存在时会
 要求用户确认操作。
 
-<dl>
-<dt><a href="#answer-header-function">思考题</a></dt>
-<dd>
- 写一个函数提取出某个 c 头文件中的函数声明中的函数名和声明位置。
-</dd>
-</dl>
+> ### [思考题](#answer-header-function)
+> 写一个函数提取出某个 c 头文件中的函数声明中的函数名和声明位置。
 
 ## 文件信息 ##
 
@@ -192,11 +188,8 @@ delete-file。创建目录使用 make-directory 函数。不能用 delete-file �
 set-file-modes 函数。set-file-modes函数的参数必须是一个整数。你可以用位
 函数 logand、logior 和 logxor 函数来进行位操作。
 
-<dl>
-<dt><a href="#answer-chmod">思考题</a></dt>
-<dd>
- 写一个函数模拟 chmod 命令的行为。
- </dd></dl>
+> ### [思考题](#answer-chmod)
+> 写一个函数模拟 chmod 命令的行为。
 
 ## 文件名操作 ##
 
@@ -281,11 +274,8 @@ directory-files-and-attributes 和 directory-files 相似，但是返回的列�
 个文件在目录中的所有版本，file-expand-wildcards 可以用通配符来得到目录
 中的文件列表。
 
-<dl>
-<dt><a href="#answer-recursive-ls">思考题</a></dt>
-<dd>
- 写一个函数返回当前目录包括子目录中所有文件名。
- </dd></dl>
+> ### [思考题](#answer-recursive-ls)
+> 写一个函数返回当前目录包括子目录中所有文件名。
 
 ## 神奇的 Handle ##
 

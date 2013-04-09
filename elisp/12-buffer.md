@@ -101,12 +101,8 @@ save-excursion 与 save-current-buffer 不同之处在于，它不仅保存当�
 
 和 point 类似，有一个特殊的标记称为 "the mark"。它指定了一个区域的文本用于某些命令，比如 kill-region，indent-region。可以用 mark 函数返回当前 mark 的值。如果使用 transient-mark-mode，而且 mark-even-if-inactive值是 nil 的话，在 mark 没有激活时（也就是 mark-active 的值为 nil），调用 mark 函数会产生一个错误。如果传递一个参数 force 才能返回当前缓冲区 mark 的位置。mark-marker 能返回当前缓冲区的 mark，这不是 mark 的拷贝，所以设置它的值会改变当前 mark 的值。set-mark 可以设置 mark 的值，并激活 mark。每个缓冲区还维护一个mark-ring，这个列表里保存了 mark 的前一个值。当一个命令修改了 mark 的值时，通常要把旧的值放到 mark-ring 里。可以用 push-mark 和 pop-mark 加入或删除 mark-ring 里的元素。当缓冲区里 mark 存在且指向某个位置时，可以用 region-beginning 和 region-end 得到 point 和 mark 中较小的和较大的值。当然如果使用 transient-mark-mode 时，需要激活 mark，否则会产生一个错误。
 
-<dl>
-<dt><a href="#answer-mark">思考题</a></dt>
-<dd>
- 写一个命令，对于使用 transient-mark-mode 时，当选中一个区域时显示区域 的起点和终点，否则显示 point-min 和 point-max 的位置。如果不使用 transient-mark-mode，则显示 point 和 mark 的位置。
- </dd>
-</dl>
+> ### [思考题](#answer-mark)
+> 写一个命令，对于使用 transient-mark-mode 时，当选中一个区域时显示区域 的起点和终点，否则显示 point-min 和 point-max 的位置。如果不使用 transient-mark-mode，则显示 point 和 mark 的位置。
 
 按单个字符位置来移动的函数主要使用 goto-char 和 forward-char、backward-char。前者是按缓冲区的绝对位置移动，而后者是按 point 的偏移位置移动比如：
 {% highlight cl %}
@@ -126,12 +122,8 @@ save-excursion 与 save-current-buffer 不同之处在于，它不仅保存当�
 ## 缓冲区的内容 ##
 要得到整个缓冲区的文本，可以用 buffer-string 函数。如果只要一个区间的文本，使用 buffer-substring 函数。point 附近的字符可以用 char-after 和 char-before 得到。point 处的词可以用 current-word 得到，其它类型的文本，比如符号，数字，S 表达式等等，可以用 thing-at-point 函数得到。
 
-<dl>
-<dt><a href="#answer-marksexp">思考题</a></dt>
-<dd>
-参考 thing-at-point 写一个命令标记光标处的 S 表达式。这个命令和 mark-sexp 不同的是，它能从整个 S 表达式的开始标记。
-</dd>
-</dl>
+> ### [思考题](#answer-marksexp)
+> 参考 thing-at-point 写一个命令标记光标处的 S 表达式。这个命令和 mark-sexp 不同的是，它能从整个 S 表达式的开始标记。
 
 ## 修改缓冲区的内容 ##
 
@@ -151,12 +143,8 @@ save-excursion 与 save-current-buffer 不同之处在于，它不仅保存当�
 
 替换一般都是在查找之后进行，也是使用 replace-match 函数。和字符串的替换不同的是不需要指定替换的对象了。
 
-<dl>
-<dt><a href="#answer-replace>思考题</a></dt>
-<dd>
- 从 OpenOffice 字处理程序里拷贝到 emacs 里的表格通常都是每一个单元格就是一行的。写一个命令，让用户输入表格的列数，把选中区域转换成用制表符分隔的表格。
-</dd>
-</dl>
+> ### [思考题](#answer-replace)
+> 从 OpenOffice 字处理程序里拷贝到 emacs 里的表格通常都是每一个单元格就是一行的。写一个命令，让用户输入表格的列数，把选中区域转换成用制表符分隔的表格。
 
 ## 函数列表 ##
 {% highlight cl %}

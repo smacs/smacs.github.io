@@ -36,12 +36,8 @@ title: 函数和命令
 
 从这个例子可以看出，当可选参数没有提供时，在函数体里，对应的参数值都是 nil。同样调用函数时没有提供剩余参数时，其值也为 nil，但是一旦提供了剩余参数，则所有参数是以列表的形式放在对应变量里。
 
-<dl>
-<dt><a href="#answer-arg">思考题</a></dt>
-<dd>
- 写一个函数测试两个浮点数是否相等，设置一个可选参数，如果提供这个参数，则用这个参数作为测试误差，否则用 1.0e-6 作为误差。
-</dd>
-</dl>
+> ### [思考题](#answer-arg)
+> 写一个函数测试两个浮点数是否相等，设置一个可选参数，如果提供这个参数，则用这个参数作为测试误差，否则用 1.0e-6 作为误差。
 
 ## 关于文档字符串 ##
 
@@ -86,15 +82,12 @@ See also `substitute-command-keys' and `documentation'"
 (apply 'list 'x '(y ) '(z))                ; => (x (y) z)
 {% endhighlight %}
 
-<dl>
-<dt><a href="#answer-apply">思考题</a></dt>
-<dd>
-如果一个 list 作为一个树的结构，任何是 cons cell 的元素都是一个内部节点（不允许有 dotted list 出现），任何不是 cons cell 的元素都是树的叶子。请写一个函数，调用的一个类似 mapcar 的函数，调用一个函数遍历树的叶子，并收集所有的结果，返回一个结构相同的树，比如：
-<pre>
-(tree-mapcar '1+ '(1 (2 (3 4)) (5)))    ; => (2 (3 (4 5)) (6))
-</pre>
-</dd>
-</dl>
+> ### [思考题](#answer-apply)
+> 如果一个 list 作为一个树的结构，任何是 cons cell 的元素都是一个内部节点（不允许有 dotted list 出现），任何不是 cons cell 的元素都是树的叶子。请写一个函数，调用的一个类似 mapcar 的函数，调用一个函数遍历树的叶子，并收集所有的结果，返回一个结构相同的树，比如：
+>
+> ``` cl
+> (tree-mapcar '1+ '(1 (2 (3 4)) (5)))    ; => (2 (3 (4 5)) (6))
+> ```
 
 ## 宏 ##
 前面在已经简单介绍过宏。宏的调用和函数是很类似的，它的求值和函数差不多，但是有一个重要的区别是，宏的参数是出现在最后扩展后的表达式中，而函数参数是求值后才传递给这个函数：
@@ -139,12 +132,8 @@ See also `substitute-command-keys' and `documentation'"
 (symbol-plist 'when)    ; => (lisp-indent-function 1 edebug-form-spec t)
 {% endhighlight %}
 
-<dl>
-<dt><a href="#answer-declare">思考题</a></dt>
-<dd>
- 一个比较常用的结构是当 buffer 是可读情况下，绑定 inhibit-read-only 值为 t 来强制插入字符串。请写一个这样的宏，处理好缩进和调用。
-</dd>
-</dl>
+> ### [思考题](#answer-declare)
+> 一个比较常用的结构是当 buffer 是可读情况下，绑定 inhibit-read-only 值为 t 来强制插入字符串。请写一个这样的宏，处理好缩进和调用。
 
 从前面宏 when 的定义可以看出直接使用 list，cons，append 构造宏是很麻烦的。为了使记号简洁，lisp 中有一个特殊的宏 "`"，称为 backquote。在这个宏里，所有的表达式都是引起（quote）的，如果要让一个表达式不引起（也就是列表中使用的是表达式的值），需要在前面加 “,”，如果要让一个列表作为整个列表的一部分（slice），可以用 ",@"。
 
@@ -193,39 +182,35 @@ interactive 可以使用的代码字符很多，虽然有一定的规则，比�
 
 n 对应的函数是 read-number，文件对应 read-file-name。很容易记对吧。其实大部分代码字符都是有这样对应的函数或替换的方法（见下表）。
 
-<table>
-<thead>
-<tr><th width="48">代码字符</th><th>代替的表达式</th></tr>
-</thead>
-<tbody>
-<tr><td>a</td><td>(completing-read prompt obarray 'fboundp t)</td></tr>
-<tr><td>b</td><td>(read-buffer prompt nil t)</td></tr>
-<tr><td>B</td><td>(read-buffer prompt)</td></tr>
-<tr><td>c</td><td>(read-char prompt)</td></tr>
-<tr><td>C</td><td>(read-command prompt)</td></tr>
-<tr><td>d</td><td>(point)</td></tr>
-<tr><td>D</td><td>(read-directory-name prompt)</td></tr>
-<tr><td>e</td><td>(read-event)</td></tr>
-<tr><td>f</td><td>(read-file-name prompt nil nil t)</td></tr>
-<tr><td>F</td><td>(read-file-name prompt)</td></tr>
-<tr><td>G</td><td>暂时不知道和 f 的差别</td></tr>
-<tr><td>k</td><td>(read-key-sequence prompt)</td></tr>
-<tr><td>K</td><td>(read-key-sequence prompt nil t)</td></tr>
-<tr><td>m</td><td>(mark)</td></tr>
-<tr><td>n</td><td>(read-number prompt)</td></tr>
-<tr><td>N</td><td>(if current-prefix-arg (prefix-numeric-value current-prefix-arg) (read-number prompt))</td></tr>
-<tr><td>p</td><td>(prefix-numeric-value current-prefix-arg)</td></tr>
-<tr><td>P</td><td>current-prefix-arg</td></tr>
-<tr><td>r</td><td>(region-beginning) (region-end)</td></tr>
-<tr><td>s</td><td>(read-string prompt)</td></tr>
-<tr><td>S</td><td>(completing-read prompt obarray nil t)</td></tr>
-<tr><td>v</td><td>(read-variable prompt)</td></tr>
-<tr><td>x</td><td>(read-from-minibuffer prompt nil nil t)</td></tr>
-<tr><td>X</td><td>(eval (read-from-minibuffer prompt nil nil t))</td></tr>
-<tr><td>z</td><td>(read-coding-system prompt)</td></tr>
-<tr><td>Z</td><td>(and current-prefix-arg (read-coding-system prompt))</td></tr>
-</tbody>
-</table>
+
+代码字符 | 代替的表达式
+---------|----------------------------------------------------
+a        |(completing-read prompt obarray 'fboundp t)
+b        |(read-buffer prompt nil t)
+B        |(read-buffer prompt)
+c        |(read-char prompt)
+C        |(read-command prompt)
+d        |(point)
+D        |(read-directory-name prompt)
+e        |(read-event)
+f        |(read-file-name prompt nil nil t)
+F        |(read-file-name prompt)
+G        |暂时不知道和 f 的差别
+k        |(read-key-sequence prompt)
+K        |(read-key-sequence prompt nil t)
+m        |(mark)
+n        |(read-number prompt)
+N        |(if current-prefix-arg (prefix-numeric-value current-prefix-arg) (read-number prompt))
+p        |(prefix-numeric-value current-prefix-arg)
+P        |current-prefix-arg
+r        |(region-beginning) (region-end)
+s        |(read-string prompt)
+S        |(completing-read prompt obarray nil t)
+v        |(read-variable prompt)
+x        |(read-from-minibuffer prompt nil nil t)
+X        |(eval (read-from-minibuffer prompt nil nil t))
+z        |(read-coding-system prompt)
+Z        |(and current-prefix-arg (read-coding-system prompt))
 
 知道这些表达式如何用于 interactive 表达式里呢？简而言之，如果 interactive 的参数是一个表达式，则这个表达式求值后的列表元素对应于这个命令的参数。请看这个例子：
 
@@ -252,12 +237,9 @@ n 对应的函数是 read-number，文件对应 read-file-name。很容易记对
 
 从现在开始可能会遇到很多函数，它们的用法有的简单，有的却复杂的要用大段篇幅来解释。我可能就会根据需要来解释一两个函数，就不一一介绍了。自己看 info elisp，用 i 来查找对应的函数。
 
-<dl>
-<dt><a href="#answer-switch-mode">思考题</a></dt>
-<dd>
-写一个命令用来切换 major-mode。要求用户输入一个 major-mode 的名字，就切换到这个 major-mode，而且要提供一种补全的办法，去除所有不是 major-mode 的符号，这样用户需要输入少量词就能找到对应的 major-mode。
-</dd>
-</dl>
+> ### [思考题](#answer-switch-mode)
+>
+> 写一个命令用来切换 major-mode。要求用户输入一个 major-mode 的名字，就切换到这个 major-mode，而且要提供一种补全的办法，去除所有不是 major-mode 的符号，这样用户需要输入少量词就能找到对应的 major-mode。
 
 ## 函数列表 ##
 {% highlight cl %}

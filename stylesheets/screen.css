@@ -31,6 +31,27 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+tr {
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+tr.altrow {
+    background: none repeat scroll 0 0 #F9F9F9;
+}
+th, td {
+    border-style: solid;
+    border-width: 1px;
+    text-align: left;
+}
+th {
+    background: none repeat scroll 0 0 #EFFAE6;
+    border-color: #DFF4D5 #D3EFC3 #A7DF8A;
+    color: #7BA857;
+    padding: 0.8em 1em;
+}
+td {
+    border-color: #EFEFEF;
+    padding: 0.7em 1em;
+}
 
 caption, th, td {
   text-align: left;

@@ -71,10 +71,8 @@ count                                   ; => 28371
 (length obarray)                        ; => 1511
 {% endhighlight %}
 
-<dl>
-<dt><a href="#answer-obarray">思考题</a></dt>
-<dd>由前面的例子可以看出elisp 中的向量长度都是有限的，而 obarray 里的符号有成千上万个。那这些符号是怎样放到 obarray 里的呢？</dd>
-</dl>
+> ### [思考题](#answer-obarray)
+> 由前面的例子可以看出elisp 中的向量长度都是有限的，而 obarray 里的符号有成千上万个。那这些符号是怎样放到 obarray 里的呢？
 
 ## 符号的组成 ##
 
@@ -87,16 +85,14 @@ count                                   ; => 28371
 
 可能大家最常见到 setq 函数，而 set 函数确很少见到。setq 可以看成是一个宏，它可以让你用 (setq sym val) 代替 (set (quote sym) val)。事实上这也是它名字的来源 (q 代表 quoted)。但是 setq 只能设置 obarray 里的变量，前面这个例子中就只能用 set 函数。
 
-<dl>
-<dt><a href="#answer-remove">思考题</a></dt>
-<dd>参考 assoc-default 的代码，写一个函数从一个关联列表中除去一个关键字对应的元素。这个函数可以直接修改关联列表符号的值。要求可以传递一个参数作为测试关键字是否相同的函数。比如：
-<pre>
-(setq foo '((?a . a) (?A . c) (?B . d)))
-(remove-from-list 'foo ?b 'char-equal)  ; => ((97 . a) (65 . c))
-foo                                     ; => ((97 . a) (65 . c))
-</pre>
-</dd>
-</dl>
+> ### [思考题](#answer-remove)
+> 参考 assoc-default 的代码，写一个函数从一个关联列表中除去一个关键字对应的元素。这个函数可以直接修改关联列表符号的值。要求可以传递一个参数作为测试关键字是否相同的函数。比如：
+>
+> ``` cl
+> (setq foo '((?a . a) (?A . c) (?B . d)))
+> (remove-from-list 'foo ?b 'char-equal)  ; => ((97 . a) (65 . c))
+> foo                                     ; => ((97 . a) (65 . c))
+> ```
 
 如果一个符号的值已经有设置过的话，则 boundp 测试返回 t，否则为 nil。对于 boundp 测试返回 nil 的符号，使用符号的值会引起一个变量值为 void 的错误。
 
@@ -127,12 +123,8 @@ foo                                     ; => ((97 . a) (65 . c))
 (setq my-plist (plist-put my-plist 'quux '(a))) ; => (bar t foo 69 quux (a))
 {% endhighlight %}
 
-<dl>
-<dt><a href="#answer-plist">思考题</a></dt>
-<dd>
- 你能不能用已经学过的函数来实现 plist-get 和 plist-put？
-</dd>
-</dl>
+> ### [思考题](#answer-plist)
+> 你能不能用已经学过的函数来实现 plist-get 和 plist-put？
 
 ## 函数列表 ##
 {% highlight cl %}

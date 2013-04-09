@@ -120,22 +120,18 @@ foo                                  ; => "I'm buffer-local variable!"
  - 这个变量只有相关的几个函数中使用，在一个文件中放在一起。这个变量起程序里通信的作用。而且需要写好注释告诉其它程序员怎样使用它。
  - 如果这个变量是定义明确、有很好文档作用的，可能让所有函数使用它，但是不要设置它。比如 case-fold-search。（我怎么觉得这里是用全局变量呢。）
 
-<dl>
-<dt>
-<a href="#anwser-scope">思考题</a></dt>
-<dd>
- 先在 <code>*scratch*</code> 缓冲区里运行了 <code>(kill-local-variable 'foo)</code> 后，运行几次下面的表达式，你能预测它们结果吗？
-<pre>
-(progn
- (setq foo "I'm local variable!")
- (let ((foo "I'm local variable!"))
-   (set (make-local-variable 'foo) "I'm buffer-local variable!")
-   (setq foo "This is a variable!")
-   (message foo))
- (message foo))
-</pre>
-</dd>
-</dl>
+> ### [思考题](#anwser-scope)
+> 先在 <code>*scratch*</code> 缓冲区里运行了 <code>(kill-local-variable 'foo)</code> 后，运行几次下面的表达式，你能预测它们结果吗？
+>
+> ``` cl
+> (progn
+>  (setq foo "I'm local variable!")
+>  (let ((foo "I'm local variable!"))
+>    (set (make-local-variable 'foo) "I'm buffer-local variable!")
+>    (setq foo "This is a variable!")
+>    (message foo))
+>  (message foo))
+> ```
 
 ## 其它函数 ##
 

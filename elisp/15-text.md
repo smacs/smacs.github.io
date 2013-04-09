@@ -30,37 +30,32 @@ font-lock-mode 后再测试一次应该是可以看到 `*scratch*`
 
 虽然文本属性的名字可以是任意的，但是一些名字是有特殊含义的。
 
-<table>
-<thead>
-<tr><th>属性名</th><th>含义</th></tr>
-</thead>
-<tbody>
-<tr><td>category</td><td>值必须是一个符号，这个符号的属性将作为这个字符的属性</td></tr>
-<tr><td>face</td><td>控制文本的字体和颜色</td></tr>
-<tr><td>font-lock-face</td><td>和 face 相似，可以作为 font-lock-mode 中静态文本的 face</td></tr>
-<tr><td>mouse-face</td><td>当鼠标停在文本上时的文本 face</td></tr>
-<tr><td>fontified</td><td>记录是否使用 font lock 标记了 face</td></tr>
-<tr><td>display</td><td>改变文本的显示方式，比如高、低、长短、宽窄，或者用图片代替</td></tr>
-<tr><td>help-echo</td><td>鼠标停在文本上时显示的文字</td></tr>
-<tr><td>keymap</td><td>光标或者鼠标在文本上时使用的按键映射</td></tr>
-<tr><td>local-map</td><td>和 keymap 类似，通常只使用 keymap</td></tr>
-<tr><td>syntax-table</td><td>字符的语法表</td></tr>
-<tr><td>read-only</td><td>不能修改文本，通过 stickness 来选择可插入的位置</td></tr>
-<tr><td>invisible</td><td>不显示在屏幕上</td></tr>
-<tr><td>intangible</td><td>把文本作为一个整体，光标不能进入</td></tr>
-<tr><td>field</td><td>一个特殊标记，有相应的函数可以操作带这个标记的文本</td></tr>
-<tr><td>cursor</td><td>（不知道具体用途）</td></tr>
-<tr><td>pointer</td><td>修改鼠标停在文本上时的图像</td></tr>
-<tr><td>line-spacing</td><td>新的一行的距离</td></tr>
-<tr><td>line-height</td><td>本行的高度</td></tr>
-<tr><td>modification-hooks</td><td>修改这个字符时调用的函数</td></tr>
-<tr><td>insert-in-front-hooks</td><td>与 modification-hooks 相似，在字符前插入调用的函数</td></tr>
-<tr><td>insert-behind-hooks</td><td>与 modification-hooks 相似，在字符后插入调用的函数</td></tr>
-<tr><td>point-entered</td><td>当光标进入时调用的函数</td></tr>
-<tr><td>point-left</td><td>当光标离开时调用的函数</td></tr>
-<tr><td>composition</td><td>将多个字符显示为一个字形</td></tr>
-</tbody>
-</table>
+|属性名               |含义                                                      |
+|---------------------|----------------------------------------------------------|
+|category             |值必须是一个符号，这个符号的属性将作为这个字符的属性      |
+|face                 |控制文本的字体和颜色                                      |
+|font-lock-face       |和 face 相似，可以作为 font-lock-mode 中静态文本的 face   |
+|mouse-face           |当鼠标停在文本上时的文本 face                             |
+|fontified            |记录是否使用 font lock 标记了 face                        |
+|display              |改变文本的显示方式，比如高、低、长短、宽窄，或者用图片代替|
+|help-echo            |鼠标停在文本上时显示的文字                                |
+|keymap               |光标或者鼠标在文本上时使用的按键映射                      |
+|local-map            |和 keymap 类似，通常只使用 keymap                         |
+|syntax-table         |字符的语法表                                              |
+|read-only            |不能修改文本，通过 stickness 来选择可插入的位置           |
+|invisible            |不显示在屏幕上                                            |
+|intangible           |把文本作为一个整体，光标不能进入                          |
+|field                |一个特殊标记，有相应的函数可以操作带这个标记的文本        |
+|cursor               |（不知道具体用途）                                        |
+|pointer              |修改鼠标停在文本上时的图像                                |
+|line-spacing         |新的一行的距离                                            |
+|line-height          |本行的高度                                                |
+|modification-hooks   |修改这个字符时调用的函数                                  |
+|insert-in-front-hooks|与 modification-hooks 相似，在字符前插入调用的函数        |
+|insert-behind-hooks  |与 modification-hooks 相似，在字符后插入调用的函数        |
+|point-entered        |当光标进入时调用的函数                                    |
+|point-left           |当光标离开时调用的函数                                    |
+|composition          |将多个字符显示为一个字形                                  |
 
 正是由于 emacs 的文本有如此丰富的属性，使得 emacs 里的文字才变得多彩，
 变得人性化。
@@ -152,10 +147,8 @@ text-property-not-all 和它相反，查找区域内第一个指定属性值不�
 (text-property-not-all 2 6 'face 'underline foo) ; => 2
 {% endhighlight %}
 
-<dl><dt><a href="#answer-fontify">思考题</a></dt>
-<dd>
- 写一个命令，可在 text-mode 里用指定模式给选中的文本添加高亮。
- </dd></dl>
+> ### [思考题](#answer-fontify)
+> 写一个命令，可在 text-mode 里用指定模式给选中的文本添加高亮。
 
 ## 函数列表 ##
 
