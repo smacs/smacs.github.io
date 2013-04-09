@@ -3,7 +3,7 @@ layout: page
 title: Emacs Lisp 简明教程
 ---
 
-> 该教程是[叶文彬(水木ID: happierbee)](http://www.wenb.in/)写的一份Emacs Lisp的教程, 深入浅出, 非常适合初学者.
+> 这是[叶文彬(水木ID: happierbee)](http://www.wenb.in/)写的一份Emacs Lisp的教程, 深入浅出, 非常适合初学者.
 > 文档的TeX代码及PDF文档可在[此处下载](http://www.newsmth.net/nForum/article/Emacs/58338?s=58338).
 
 emacs 的高手不能不会 elisp。但是对于很多人来说 elisp 学习是一个痛苦的历程，至少我是有这样一段经历。因此，我写了这一系列文章，希望能为后来者提供一点捷径。
