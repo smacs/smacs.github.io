@@ -5,9 +5,9 @@ title: 一个 Hello World 例子
 
 自从 K&R 以来，hello world 程序历来都是程序语言教程的第一个例子。我也用一个 hello world 的例子来演示 emacs 里执行 elisp 的环境。下面就是这个语句：
 
-{% highlight cl %}
+``` cl
 (message "hello world")
-{% endhighlight %}
+```
 
 前面我没有说这个一个程序，这是因为，elisp 不好作为可执行方式来运行（当然也不是不可能），所有的 elisp 都是运行在 emacs 这个环境下。
 

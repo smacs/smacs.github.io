@@ -6,7 +6,8 @@ title: 基本数据类型之四 ── 数组和序列
 序列是列表和数组的统称，也就是说列表和数组都是序列。它们的共性是内部的元素都是有序的。elisp 里的数组包括字符串、向量、char-table 和布尔向量。它们的关系可以用下面图表示：
 
 ```
-               _____________________________________________
+
+              _____________________________________________
               |                                             |
               |          Sequence                           |
               |  ______   ________________________________  |
@@ -24,7 +25,8 @@ title: 基本数据类型之四 ── 数组和序列
               |_____________________________________________|
 
 ```
-数组有这样一些特性：
+
+组有这样一些特性：
 
  - 数组内的元素都对应一个下标，第一个元素下标为 0，接下来是 1。数组内
  的元素可以在常数时间内访问。
@@ -43,10 +45,11 @@ sequencep 用来测试一个对象是否是一个序列。arrayp 测试对象是
 ## 序列的通用函数 ##
 
 一直没有提到一个重要的函数 length，它可以得到序列的长度。但是这个函数只对真列表有效。对于一个点列表和环形列表这个函数就不适用了。点列表会出参数类型不对的错误，而环形列表就更危险，会陷入死循环。如果不确定参数类型，不妨用 safe-length。比如：
-{% highlight cl %}
+
+``` cl
 (safe-length '(a . b))                  ; => 1
 (safe-length '#1=(1 2 . #1#))           ; => 3
-{% endhighlight %}
+```
 
 > ### [思考题](#answer-cirlistp)
 > 写一个函数来检测列表是否是一个环形列表。由于现在还没有介绍 let 绑定和循环，不过如果会函数定义，还是可以用递归来实现的。
@@ -59,33 +62,38 @@ copy-sequence 在前面已经提到了。不过同样 copy-sequence 不能用于
 ## 数组操作 ##
 
 创建字符串已经说过了。创建向量可以用 vector 函数：
-{% highlight cl %}
+
+``` cl
 (vector 'foo 23 [bar baz] "rats")
-{% endhighlight %}
+```
 
 当然也可以直接用向量的读入语法创建向量，但是由于数组是自求值的，所以这样得到的向量和原来是一样的，也就是说参数不进行求值，看下面的例子就明白了：
-{% highlight cl %}
+
+``` cl
 foo                                     ; => (a b)
 [foo]                                   ; => [foo]
 (vector foo)                            ; => [(a b)]
-{% endhighlight %}
+```
 
 用 make-vector 可以生成元素相同的向量。
-{% highlight cl %}
+
+``` cl
 (make-vector 9 'Z)                      ; => [Z Z Z Z Z Z Z Z Z]
-{% endhighlight %}
+```
 
 fillarray 可以把整个数组用某个元素填充。
-{% highlight cl %}
+
+``` cl
 (fillarray (make-vector 3 'Z) 5)        ; => [5 5 5]
-{% endhighlight %}
+```
 
 aref 和 aset 可以用于访问和修改数组的元素。如果使用下标超出数组长度的话，会产生一个错误。所以要先确定数组的长度才能用这两个函数。
 
 vconcat 可以把多个序列用 vconcat 连接成一个向量。但是这个序列必须是真列表。这也是把列表转换成向量的方法。
-{% highlight cl %}
+
+``` cl
 (vconcat [A B C] "aa" '(foo (6 7)))     ; => [A B C 97 97 foo (6 7)]
-{% endhighlight %}
+```
 
 把向量转换成列表可以用 append 函数，这在前一节中已经提到。
 
@@ -94,7 +102,8 @@ vconcat 可以把多个序列用 vconcat 连接成一个向量。但是这个序
 > 如果知道 elisp 的 let 绑定和循环的使用方法，不妨试试实现一个 elisp 的 tr 函数，它接受三个参数，一是要操作的字符串，另外两个分别是要替换的字符集，和对应的替换后的字符集（当它是空集时，删除字符串中所有对应的字符）。
 
 ## 函数列表 ##
-{% highlight cl %}
+
+``` cl
 ;; 测试函数
 (sequencep OBJECT)
 (arrayp OBJECT)
@@ -114,14 +123,15 @@ vconcat 可以把多个序列用 vconcat 连接成一个向量。但是这个序
 (aset ARRAY IDX NEWELT)
 (vconcat &rest SEQUENCES)
 (append &rest SEQUENCES)
-{% endhighlight %}
+```
 
 ## 问题解答 ##
 
 <a name="answer-cirlistp"></a>
 #### 测试列表是否是环形列表 ####
 这个算法是从 safe-length 定义中得到的。你可以直接看它的源码。下面是我写的函数。
-{% highlight cl %}
+
+``` cl
 (defun circular-list-p (list)
   (and (consp list)
        (circular-list-p-1 (cdr list) list 0)))
@@ -136,11 +146,12 @@ vconcat 可以把多个序列用 vconcat 连接成一个向量。但是这个序
                              halftail)
                            (1+ len))
       nil)))
-{% endhighlight %}
+```
 
 <a name="answer-tr"></a>
 #### 转换字符的 tr 函数 ####
-{% highlight cl %}
+
+``` cl
 (defun my-tr (str from to)
   (if (= (length to) 0)                 ; 空字符串
       (progn
@@ -162,17 +173,16 @@ vconcat 可以把多个序列用 vconcat 连接成一个向量。但是这个序
            (aref str i))
          newstr))
       (concat (nreverse newstr) nil))))
-{% endhighlight %}
+```
 
 这里用到的 dotimes 函数相当于一个 C 里的 for 循环。如果改写成 while 循环，相当于：
-{% highlight cl %}
+
+``` cl
 (let (var)
   (while (< var count)
     body
     (setq var (1+ var)))
   result)
-{% endhighlight %}
+```
 
 从这个例子也可以看出，由于列表具有丰富的函数和可变长度，使列表比数组使用更方便，而且效率往往更高。
-
-

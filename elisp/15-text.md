@@ -15,10 +15,11 @@ title: 操作对象之四 ── 文本
 也可以用相应的函数只复制文本字符串，比如 substring-no-properties、
 insert-buffer-substring-no-properties、buffer-substring-no-properties。
 
-产生一个带属性的字符串可以用 propertize 函数：
-{% highlight cl %}
+产生一个带属性的字符串可以用 propertize 函数
+
+``` cl
 (propertize "abc" 'face 'bold)          ; => #("abc" 0 3 (face bold))
-{% endhighlight %}
+```
 
 如果你在一个 text-mode 的缓冲区内用 M-x eval-expression 用 insert 函数
 插入前面这个字符串，就会发现插入的文本已经是粗体字了。之所以不能在
@@ -67,7 +68,7 @@ font-lock-mode 后再测试一次应该是可以看到 `*scratch*`
 
 查看文本对象在某处的文本属性可以用 get-text-property 函数。
 
-{% highlight cl %}
+``` cl
 (setq foo (concat "abc"
                   (propertize "cde" 'face 'bold))) ; => #("abccde" 3 6 (face bold))
 (get-text-property 3 'face foo)                    ; => bold
@@ -75,7 +76,7 @@ font-lock-mode 后再测试一次应该是可以看到 `*scratch*`
   (goto-char (point-min))
   (insert foo))
 (get-text-property 4 'face)                        ; => bold
-{% endhighlight %}
+```
 
 get-char-property 和 get-text-property 相似，但是它是先查找 overlay 的
 文本属性。overlay 是缓冲区文字在屏幕上的显示方式，它属于某个缓冲区，具
@@ -86,12 +87,13 @@ get-text-property 是查找某个属性的值，用 text-properties-at 可以得
 
 ## 修改文本属性 ##
 
-put-text-property 可以给文本对象添加一个属性。比如：
-{% highlight cl %}
+put-text-property 可以给文本对象添加一个属性。比如
+
+``` cl
 (let ((str "abc"))
   (put-text-property 0 3 'face 'bold str)
   str)                                  ; => #("abc" 0 3 (face bold))
-{% endhighlight %}
+```
 
 和 put-text-property 类似，add-text-properties 可以给文本对象添加一系
 列的属性。和 add-text-properties 不同，可以用 set-text-properties 直接
@@ -100,7 +102,7 @@ put-text-property 可以给文本对象添加一个属性。比如：
 remove-list-of-text-properties 来除去某个区域的指定文本属性。这两个函
 数的属性列表参数只有名字起作用，值是被忽略的。
 
-{% highlight cl %}
+``` cl
 (setq foo (propertize "abcdef" 'face 'bold
                       'pointer 'hand))
 ;; => #("abcdef" 0 6 (pointer hand face bold))
@@ -110,7 +112,7 @@ foo   ; => #("abcdef" 2 6 (pointer hand face bold))
 foo   ; => #("abcdef" 2 4 (pointer hand) 4 6 (pointer hand face bold))
 (remove-list-of-text-properties 4 6 '(face nil pointer nil) foo) ; => t
 foo   ; => #("abcdef" 2 4 (pointer hand))
-{% endhighlight %}
+```
 
 ## 查找文本属性 ##
 
@@ -124,8 +126,9 @@ next-single-property-change 查找指定的一个文本属性改变的位置。
 next-char-property-change 把 overlay 的文本属性考虑在内查找属性发生改
 变的位置。next-single-property-change 类似的查找指定的一个考虑 overlay
 后文本属性改变的位置。这四个函数都对应有 previous- 开头的函数，用于查
-找当前位置之前文本属性改变的位置。
-{% highlight cl %}
+找当前位置之前文本属性改变的位置
+
+``` cl
 (setq foo (concat "ab"
                   (propertize "cd" 'face 'bold)
                   (propertize "ef" 'pointer 'hand)))
@@ -134,25 +137,25 @@ next-char-property-change 把 overlay 的文本属性考虑在内查找属性发
 (next-single-property-change 1 'pointer foo)  ; => 4
 (previous-property-change 6 foo)              ; => 4
 (previous-single-property-change 6 'face foo) ; => 4
-{% endhighlight %}
+```
 
 text-property-any 查找区域内第一个指定属性值为给定值的字符位置。
 text-property-not-all 和它相反，查找区域内第一个指定属性值不是给定值的
 字符位置。
 
-{% highlight cl %}
+``` cl
 (text-property-any 0 6 'face 'bold foo)          ; => 2
 (text-property-any 0 6 'face 'underline foo)     ; => nil
 (text-property-not-all 2 6 'face 'bold foo)      ; => 4
 (text-property-not-all 2 6 'face 'underline foo) ; => 2
-{% endhighlight %}
+```
 
 > ### [思考题](#answer-fontify)
 > 写一个命令，可在 text-mode 里用指定模式给选中的文本添加高亮。
 
 ## 函数列表 ##
 
-{% highlight cl %}
+``` cl
 (propertize STRING &rest PROPERTIES)
 (get-text-property POSITION PROP &optional OBJECT)
 (get-char-property POSITION PROP &optional OBJECT)
@@ -172,14 +175,14 @@ text-property-not-all 和它相反，查找区域内第一个指定属性值不�
 (previous-single-char-property-change POSITION PROP &optional OBJECT LIMIT)
 (text-property-any START END PROPERTY VALUE &optional OBJECT)
 (text-property-not-all START END PROPERTY VALUE &optional OBJECT)
-{% endhighlight %}
+```
 
 ## 问题解答 ##
 
 <a name="answer-fontify"></a>
 #### 手工高亮代码 ####
 
-{% highlight cl %}
+``` cl
 (defun my-fontify-region (beg end mode)
   (interactive
    (list (region-beginning)
@@ -211,7 +214,7 @@ text-property-not-all 和它相反，查找区域内第一个指定属性值不�
       (dolist (f (nreverse face-list))
         (put-text-property (+ beg (car f)) (+ beg (cadr f))
                            'face (nth 2 f))))))
-{% endhighlight %}
+```
 
 但是直接从那个临时缓冲区里把整个代码拷贝出来也可以了，但是可能某些情况
 下，不好修改当前缓冲区，或者不想把那个模式里其它文本属性拷贝出来，这个

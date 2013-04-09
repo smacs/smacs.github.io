@@ -37,14 +37,14 @@ find-file-noselect 是所有访问文件的核心函数。与 find-file 不同�
 修改。同样不要直接从 buffer-list 里搜索buffer-file-name 来查找和某个文
 件关联的缓冲区。应该使用get-file-buffer 或者 find-buffer-visiting。
 
-{% highlight cl %}
+``` cl
 (find-file "~/temp/test.txt")
 (with-current-buffer
     (find-file-noselect "~/temp/test.txt")
   buffer-file-name)                     ; => "/home/ywb/temp/test.txt"
 (find-buffer-visiting "~/temp/test.txt") ; => #<buffer test.txt>
 (get-file-buffer "~/temp/test.txt")      ; => #<buffer test.txt>
-{% endhighlight %}
+```
 
 
 保存一个文件的过程相对简单一些。首先创建备份文件，处理文件的位模式，将
@@ -64,11 +64,12 @@ write-file-functions 功能也比较类似，但是这个变量里的函数会�
 读取完之后并不希望这个缓冲区还留下来，如果直接用 kill-buffer 可能会把
 用户打开的文件关闭。而且 find-file-noselect 做的事情实在超出我们的需要
 的。这时你可能需要的是更底层的文件读写函数，它们是
-insert-file-contents 和 write-region，调用形式分别是：
-{% highlight cl %}
+insert-file-contents 和 write-region，调用形式分别是
+
+``` cl
 (insert-file-contents filename &optional visit beg end replace)
 (write-region start end filename &optional append visit lockname mustbenew)
-{% endhighlight %}
+```
 
 insert-file-contents 可以插入文件中指定部分到当前缓冲区中。如果指定
 visit 则会标记缓冲区的修改状态并关联缓冲区到文件，一般是不用的。
@@ -93,13 +94,13 @@ write-region 可以把缓冲区中的一部分写入到指定文件中。如果�
 file-executable-p 分用来测试用户对文件的权限。文件的位模式还可以用
 file-modes 函数得到。
 
-{% highlight cl %}
+``` cl
 (file-exists-p "~/temp/test.txt")              ; => t
 (file-readable-p "~/temp/test.txt")            ; => t
 (file-writable-p "~/temp/test.txt")            ; => t
 (file-executable-p "~/temp/test.txt")          ; => nil
 (format "%o" (file-modes "~/temp/test.txt"))   ; => "644"
-{% endhighlight %}
+```
 
 文件类型判断可以使用 file-regular-p、file-directory-p、file-symlink-p，
 分别判断一个文件名是否是一个普通文件（不是目录，命名管道、终端或者其它
@@ -112,19 +113,19 @@ buffer-file-truename 来记录这个文件名。
     $ ls -l t.txt
     lrwxrwxrwx 1 ywb ywb 8 2007-07-15 15:51 t.txt -> test.txt
 
-{% highlight cl %}
+``` cl
 (file-regular-p "~/temp/t.txt")         ; => t
 (file-directory-p "~/temp/t.txt")       ; => nil
 (file-symlink-p "~/temp/t.txt")         ; => "test.txt"
 (file-truename "~/temp/t.txt")          ; => "/home/ywb/temp/test.txt"
-{% endhighlight %}
+```
 
 文件更详细的信息可以用 file-attributes 函数得到。这个函数类似系统的
 stat 命令，返回文件几乎所有的信息，包括文件类型，用户和组用户，访问日
 期、修改日期、status change 日期、文件大小、文件位模式、inode number、
 system number。这是我写的方便使用的帮助函数：
 
-{% highlight cl %}
+``` cl
 (defun file-stat-type (file &optional id-format)
   (car (file-attributes file id-format)))
 (defun file-stat-name-number (file &optional id-format)
@@ -173,7 +174,7 @@ system number。这是我写的方便使用的帮助函数：
   (nth 10 attr))
 (defun file-attr-system-number (attr)
   (nth 11 attr))
-{% endhighlight %}
+```
 
 前一组函数是直接由文件名访问文件信息，而后一组函数是由 file-attributes
 的返回值来得到文件信息。
@@ -196,15 +197,16 @@ set-file-modes 函数。set-file-modes函数的参数必须是一个整数。你
 虽然 MSWin 的文件名使用的路径分隔符不同，但是这里介绍的函数都能用于
 MSWin 形式的文件名，只是返回的文件名都是 Unix 形式了。路径一般由目录和
 文件名，而文件名一般由主文件名(basename)、文件名后缀和版本号构成。
-Emacs 有一系列函数来得到路径中的不同部分：
-{% highlight cl %}
+Emacs 有一系列函数来得到路径中的不同部分
+
+``` cl
 (file-name-directory "~/temp/test.txt")      ; => "~/temp/"
 (file-name-nondirectory "~/temp/test.txt")   ; => "test.txt"
 (file-name-sans-extension "~/temp/test.txt") ; => "~/temp/test"
 (file-name-extension "~/temp/test.txt")      ; => "txt"
 (file-name-sans-versions "~/temp/test.txt~") ; => "~/temp/test.txt"
 (file-name-sans-versions "~/temp/test.txt.~1~") ; => "~/temp/test.txt"
-{% endhighlight %}
+```
 
 路径如果是从根目录开始的称为是绝对路径。测试一个路径是否是绝对路径使用
 file-name-absolute-p。如果在 Unix 或 GNU/Linux 系统，以
@@ -213,28 +215,30 @@ file-name-absolute-p。如果在 Unix 或 GNU/Linux 系统，以
 expand-file-name 来得到绝对路径。把一个绝对路径转换成相对某个路径的相
 对路径的可以用 file-relative-name 函数。
 
-{% highlight cl %}
+``` cl
 (file-name-absolute-p "~rms/foo")       ; => t
 (file-name-absolute-p "/user/rms/foo")  ; => t
 (expand-file-name "foo")                ; => "/home/ywb/foo"
 (expand-file-name "foo" "/usr/spool/")  ; => "/usr/spool/foo"
 (file-relative-name "/foo/bar" "/foo/") ; => "bar"
 (file-relative-name "/foo/bar" "/hack/") ; => "../foo/bar"
-{% endhighlight %}
+```
 
 对于目录，如果要将其作为目录，也就是确保它是以路径分隔符结束，可以用
 file-name-as-directory。不要用 (concat dir "/") 来转换，这会有移植问题。
-和它相对应的函数是 directory-file-name。
-{% highlight cl %}
+和它相对应的函数是 directory-file-name
+
+``` cl
 (file-name-as-directory "~rms/lewis")   ; => "~rms/lewis/"
 (directory-file-name "~lewis/")         ; => "~lewis"
-{% endhighlight %}
+```
 
 如果要得到所在系统使用的文件名，可以用 convert-standard-filename。比如
-在 MSWin 系统上，可以用这个函数返回用 "\\" 分隔的文件名。
-{% highlight cl %}
+在 MSWin 系统上，可以用这个函数返回用 "\\" 分隔的文件名
+
+``` cl
 (convert-standard-filename "c:/windows")  ;=> "c:\\windows"
-{% endhighlight %}
+```
 
 ## 临时文件 ##
 
@@ -242,18 +246,19 @@ file-name-as-directory。不要用 (concat dir "/") 来转换，这会有移植�
 生一个不和现有文件冲突的文件，并返回它的文件名。如果给定的名字是一个相
 对文件名，则产生的文件名会用 temporary-file-directory 进行扩展。也可以
 用这个函数产生一个临时文件夹。如果只想产生一个不存在的文件名，可以用
-make-temp-name 函数。
-{% highlight cl %}
+make-temp-name 函数
+
+``` cl
 (make-temp-file "foo")                  ; => "/tmp/foo5611dxf"
 (make-temp-name "foo")                  ; => "foo5611q7l"
-{% endhighlight %}
+```
 
 ## 读取目录内容 ##
 
 可以用 directory-files 来得到某个目录中的全部或者符合某个正则表达式的
 文件名。
 
-{% highlight cl %}
+``` cl
 (directory-files "~/temp/dir/")
 ;; =>
 ;; ("#foo.el#" "." ".#foo.el" ".." "foo.el" "t.pl" "t2.pl")
@@ -267,7 +272,7 @@ make-temp-name 函数。
 ;;  "/home/ywb/temp/dir/t.pl"
 ;;  "/home/ywb/temp/dir/t2.pl")
 (directory-files "~/temp/dir/" nil "\\.pl$") ; => ("t.pl" "t2.pl")
-{% endhighlight %}
+```
 
 directory-files-and-attributes 和 directory-files 相似，但是返回的列表
 中包含了 file-attributes 得到的信息。file-name-all-versions 用于得到某
@@ -322,7 +327,7 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
 的缓冲区使用 handler（我觉得是一个 bug 呀），继续往下看，发现生成保存文
 件名是使用了 expand-file-name 函数，所以解决办法就产生了：
 
-{% highlight cl %}
+``` cl
 (defun my-scratch-auto-save-file-name (operation &rest args)
   (if (and (eq operation 'expand-file-name)
            (string= (car args) "#*scratch*#"))
@@ -333,11 +338,11 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
                       inhibit-file-name-handlers)))
           (inhibit-file-name-operation operation))
       (apply operation args))))
-{% endhighlight %}
+```
 
 ## 函数列表 ##
 
-{% highlight cl %}
+``` cl
 (find-file FILENAME &optional WILDCARDS)
 (find-file-noselect FILENAME &optional NOWARN RAWFILE WILDCARDS)
 (set-visited-file-name FILENAME &optional NO-QUERY ALONG-WITH-FILE)
@@ -377,7 +382,7 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
 (make-temp-name PREFIX)
 (directory-files DIRECTORY &optional FULL MATCH NOSORT)
 (dired-files-attributes DIR)
-{% endhighlight %}
+```
 
 ## 问题解答 ##
 
@@ -387,7 +392,7 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
 从这个例子也可以看出它错误的把那个 typedef void 当成函数声明了。如果你
 知道更好的正则表达式，请告诉我一下。
 
-{% highlight cl %}
+``` cl
 (defvar header-regexp-list
   '(("^\\(?:\\(?:G_CONST_RETURN\\|extern\\|const\\)\\s-+\\)?[a-zA-Z][_a-zA-Z0-9]*\
 \\(?:\\s-*[*]*[ \t\n]+\\|\\s-+[*]*\\)\\([a-zA-Z][_a-zA-Z0-9]*\\)\\s-*(" . 1)
@@ -420,7 +425,7 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
 ;;  ("g_module_open" . 2021)
 ;;  ("g_module_supported" . 1894)
 ;;  ("void" . 1673))
-{% endhighlight %}
+```
 
 <a name="answer-chmod"></a>
 #### 模拟 chmod 的函数 ####
@@ -429,7 +434,7 @@ REGEXP 则使用 HANDLER 来进行相应的文件操作。这里所说的文件�
 好不要直接调用这个函数，因为每次调用都要解析一次 mode 参数，想一个只解
 析一次的方法吧。
 
-{% highlight cl %}
+``` cl
 (defun chmod (mode file)
   "A elisp function to simulate command chmod.
 Note that the command chmod can accept MODE match
@@ -481,13 +486,13 @@ MODE match `[ugoa]*[-+=]([rwx]*|[ugo])'.
                                   (logxor (logand bits mask) #o777))))))))
         (t (error "Unknow mode option: %S" mode)))
   (set-file-modes file mode))
-{% endhighlight %}
+```
 
 <a name="answer-recursive-ls"></a>
 #### 列出目录中所有文件 ####
 为了让这个函数更类似 directory-files 函数，我把参数设置为和它一样的：
 
-{% highlight cl %}
+``` cl
 (defun my-directory-all-files (dir &optional full match nosort)
   (apply 'append
    (delq nil
@@ -504,6 +509,6 @@ MODE match `[ugoa]*[-+=]([rwx]*|[ugo])'.
          (if (string-match match file)
              (list file))))
      (directory-files dir full nil nosort)))))
-{% endhighlight %}
+```
 
 

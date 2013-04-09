@@ -5,8 +5,9 @@ title: 变量
 
 在此之前，我们已经见过 elisp 中的两种变量，全局变量和 let 绑定的局部变量。它们相当于其它语言中的全局变量和局部变量。
 
-关于 let 绑定的变量，有两点需要补充的。当同一个变量名既是全局变量也是局部变量，或者用 let 多层绑定，只有最里层的那个变量是有效的，用 setq 改变的也只是最里层的变量，而不影响外层的变量。比如：
-{% highlight cl %}
+关于 let 绑定的变量，有两点需要补充的。当同一个变量名既是全局变量也是局部变量，或者用 let 多层绑定，只有最里层的那个变量是有效的，用 setq 改变的也只是最里层的变量，而不影响外层的变量。比如
+
+``` cl
 (progn
   (setq foo "I'm global variable!")
   (let ((foo 5))
@@ -16,7 +17,7 @@ title: 变量
       (message foo))
     (message "foo value is still: %S" foo))
   (message foo))
-{% endhighlight %}
+```
 
 另外需要注意一点的是局部变量的绑定不能超过一定的层数，也就是说，你不能把 foo 用 let 绑定 10000 层。当然普通的函数是不可能写成这样的，但是递归函数就不一定了。限制层数的变量在 max-specpdl-size 中定义。如果你写的递归函数有这个需要的话，可以先设置这个变量的值。
 
@@ -30,11 +31,12 @@ emacs 能有如此丰富的模式，各个缓冲区之间能不相互冲突，�
 
 为了方便演示，下面的代码我假定你是在 `*scratch*` 缓冲区里运行。我使用另一个一般都会有的缓冲区 `*Messages*` 作为测试。先介绍两个用到的函数（ with-current-buffer  其实是一个宏）。
 
-with-current-buffer 的使用形式是：
-{% highlight cl %}
+with-current-buffer 的使用形式是
+
+``` cl
 (with-current-buffer buffer
   body)
-{% endhighlight %}
+```
 
 其中 buffer 可以是一个缓冲区对象，也可以是缓冲区的名字。它的作用是使其中的 body 表达式在指定的缓冲区里执行。
 
@@ -42,34 +44,37 @@ get-buffer 可以用缓冲区的名字得到对应的缓冲区对象。如果没
 
 下面是使用 buffer-local 变量的例子：
 
-{% highlight cl %}
+``` cl
 (setq foo "I'm global variable!")       ; => "I'm global variable!"
 (make-local-variable 'foo)              ; => foo
 foo                                     ; => "I'm global variable!"
 (setq foo "I'm buffer-local variable!") ; => "I'm buffer-local variable!"
 foo                                  ; => "I'm buffer-local variable!"
 (with-current-buffer "*Messages*" foo)  ; => "I'm global variable!"
-{% endhighlight %}
+```
 
-从这个例子中可以看出，当一个符号作为全局变量时有一个值的话，用 make-local-variable 声明为 buffer-local 变量时，这个变量的值还是全局变量的值。这时候全局的值也称为缺省值。你可以用 default -value 来访问这个符号的全局变量的值：
-{% highlight cl %}
+从这个例子中可以看出，当一个符号作为全局变量时有一个值的话，用 make-local-variable 声明为 buffer-local 变量时，这个变量的值还是全局变量的值。这时候全局的值也称为缺省值。你可以用 default -value 来访问这个符号的全局变量的值
+
+``` cl
 (default-value 'foo)                    ; => "I'm global variable!"
-{% endhighlight %}
+```
 
 如果一个变量是 buffer-local，那么在这个缓冲区内使用用 setq 就只能用改变当前缓冲区里这个变量的值。setq-default 可以修改符号作为全局变量的值。通常在 .emacs 里经常使用 setq-default，这样可以防止修改的是导入 .emacs 文件对应的缓冲区里的 buffer-local 变量，而不是设置全局的值。
 
-测试一个变量是不是 buffer-local 可以用 local-variable-p：
-{% highlight cl %}
+测试一个变量是不是 buffer-local 可以用 local-variable-p
+
+``` cl
 (local-variable-p 'foo)                           ; => t
 (local-variable-p 'foo (get-buffer "*Messages*")) ; => nil
-{% endhighlight %}
+```
 
-如果要在当前缓冲区里得到其它缓冲区的 buffer-local 变量可以用 buffer-local-value：
-{% highlight cl %}
+如果要在当前缓冲区里得到其它缓冲区的 buffer-local 变量可以用 buffer-local-value
+
+``` cl
 (with-current-buffer "*Messages*"
   (buffer-local-value 'foo (get-buffer "*scratch*")))
                     ; => "I'm buffer local variable!"
-{% endhighlight %}
+```
 
 ## 变量的作用域 ##
 
@@ -85,7 +90,7 @@ foo                                  ; => "I'm buffer-local variable!"
 
 比如 let 绑定和函数参数列表的变量在整个表达式内都是可见的，这有别于其它语言词法作用域的变量。先看下面这个例子：
 
-{% highlight cl %}
+``` cl
 (defun binder (x)                      ; `x' is bound in `binder'.
   (foo 5))                             ; `foo' is some other function.
 (defun user ()                         ; `x' is used "free" in `user'.
@@ -93,19 +98,19 @@ foo                                  ; => "I'm buffer-local variable!"
 (defun foo (ignore)
   (user))
 (binder 10)                            ; => (10)
-{% endhighlight %}
+```
 
 对于词法作用域的语言，在 user 函数里无论如何是不能访问 binder 函数中绑定的 x。但是在 elisp 中可以。
 
 生存期是指程序运行过程中，变量什么时候是有效的。全局变量和 buffer-local 变量都是始终存在的，前者只能当关闭emacs 或者用 unintern 从 obarray 里除去时才能消除。而 buffer-local 的变量也只能关闭缓冲区或者用 kill-local-variable 才会消失。而对于局部变量，emacs lisp 使用的方式称为动态生存期：只有当绑定了这个变量的表达式运行时才是有效的。这和 C 和 Pascal 里的 Local 和automatic 变量是一样的。与此相对的是 indefinite extent，变量即使离开绑定它的表达式还能有效。比如：
 
-{% highlight cl %}
+``` cl
 (defun make-add (n)
   (function (lambda (m) (+ n m))))      ; Return a function.
 (fset 'add2 (make-add 2))               ; Define function `add2'
                                         ;   with `(make-add 2)'.
 (add2 4)                                ; Try to add 2 to 4.
-{% endhighlight %}
+```
 
 其它 Lisp 方言中有闭包，但是 emacs lisp 中没有。
 
@@ -139,7 +144,7 @@ foo                                  ; => "I'm buffer-local variable!"
 
 使一个变量的值重新为空，可以用 makunbound。要消除一个 buffer-local 变量用函数 kill-local-variable。可以用 kill-all-local-variables 消除所有的 buffer-local 变量。但是有属性 permanent-local 的不会消除，带有这些标记的变量一般都是和缓冲区模式无关的，比如输入法。
 
-{% highlight cl %}
+``` cl
 foo                                     ; => "I'm local variable!"
 (boundp 'foo)                           ; => t
 (default-boundp 'foo)                   ; => t
@@ -147,7 +152,7 @@ foo                                     ; => "I'm local variable!"
 foo                                     ; This will signal an error
 (default-boundp 'foo)                   ; => t
 (kill-local-variable 'foo)              ; => foo
-{% endhighlight %}
+```
 
 ## 变量名习惯 ##
 
@@ -163,8 +168,9 @@ foo                                     ; This will signal an error
  - forms 一个表达式列表。
  - map 一个按键映射（keymap）
 
-## 函数列表 ##
-{% highlight cl %}
+## 函数列表 #
+
+``` cl
 (make-local-variable VARIABLE)
 (make-variable-buffer-local VARIABLE)
 (with-current-buffer BUFFER &rest BODY)
@@ -177,11 +183,13 @@ foo                                     ; This will signal an error
 (makunbound SYMBOL)
 (kill-local-variable VARIABLE)
 (kill-all-local-variables)
-{% endhighlight %}
+```
 
 ## 变量列表 ##
 
-    max-specpdl-size
+``` cl
+max-specpdl-size
+```
 
 ## 问题解答 ##
 

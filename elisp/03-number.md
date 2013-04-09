@@ -7,23 +7,27 @@ elisp 里的对象都是有类型的，而且每一个对象它们知道自己�
 
 在开始前有必要先了解一下读入语法和输出形式。所谓读入语法是让 elisp 解释器明白输入字符所代表的对象，你不可能让 elisp 读入 .#@!? 这样奇怪的东西还能好好工作吧（perl好像经常要受这样的折磨:)）。简单的来说，一种数据类型有（也可能没有，比如散列表）对应的规则来让解释器产生这种数据类型，比如 123 产生整数 123，(a . b) 产生一个 cons。所谓输出形式是解释器用产生一个字符串来表示一个数据对象。比如整数 123 的输出形式就是 123，cons cell (a . b) 的输出形式是 (a . b)。与读入语法不同的是，数据对象都有输出形式。比如散列表的输出可能是这样的：
 
-    #<hash-table 'eql nil 0/65 0xa7344c8>
+``` cl
+#<hash-table 'eql nil 0/65 0xa7344c8>
+```
 
 通常一个对象的数据对象的输出形式和它的读入形式都是相同的。现在就先从简单的数据类型──数字开始吧。
 
 emacs 的数字分为整数和浮点数（和 C 比没有双精度数 double）。1， 1.，+1, -1, 536870913, 0, -0 这些都是整数。整数的范围是和机器是有关的，一般来最小范围是在 -268435456 to 268435455（29位，`-2**28` ~ `2**28-1`）。可以从 most-positive-fixnum 和 most-negative-fixnum 两个变量得到整数的范围。
 
 你可以用多种进制来输入一个整数。比如：
-{% highlight cl %}
-     #b101100 => 44      ; 二进制
-     #o54 => 44          ; 八进制
-     #x2c => 44          ; 十进制
-{% endhighlight %}
+
+``` cl
+#b101100 => 44      ; 二进制
+#o54 => 44          ; 八进制
+#x2c => 44          ; 十进制
+```
 
 最神奇的是你可以用 2 到 36 之间任意一个数作为基数，比如：
-{% highlight cl %}
-     #24r1k => 44        ; 二十四进制
-{% endhighlight %}
+
+``` cl
+#24r1k => 44        ; 二十四进制
+```
 
 之所以最大是 36，是因为只有 0-9 和 a-z 36 个字符来表示数字。但是我想基本上不会有人会用到 emacs 的这个特性。
 
@@ -33,13 +37,13 @@ emacs 的数字分为整数和浮点数（和 C 比没有双精度数 double）�
 
 整数类型测试函数是 integerp，浮点数类型测试函数是 floatp。数字类型测试用 numberp。你可以分别运行这几个例子来试验一下：
 
-{% highlight cl %}
+``` cl
 (integerp 1.)                           ; => t
 (integerp 1.0)                          ; => nil
 (floatp 1.)                             ; => nil
 (floatp -0.0e+NaN)                      ; => t
 (numberp 1)                             ; => t
-{% endhighlight %}
+```
 
 还提供一些特殊测试，比如测试是否是零的 zerop，还有非负整数测试的 wholenump。
 
@@ -49,15 +53,15 @@ emacs 的数字分为整数和浮点数（和 C 比没有双精度数 double）�
 
 常用的比较操作符号是我们在其它言中都很熟悉的，比如 `<, >, >=, <=`，不一样的是，由于赋值是使用 set 函数，所以 `=` 不再是一个赋值运算符了，而是测试数字相等符号。和其它语言类似，对于浮点数的相等测试都是不可靠的。比如：
 
-{% highlight cl %}
+``` cl
 (setq foo (- (+ 1.0 1.0e-3) 1.0))       ; => 0.0009999999999998899
 (setq bar 1.0e-3)                       ; => 0.001
 (= foo bar)                             ; => nil
-{% endhighlight %}
+```
 
 所以一定要确定两个浮点数是否相同，是要在一定误差内进行比较。这里给出一个函数：
 
-{% highlight cl %}
+``` cl
 (defvar fuzz-factor 1.0e-6)
 (defun approx-equal (x y)
   (or (and (= x 0) (= y 0))
@@ -65,14 +69,14 @@ emacs 的数字分为整数和浮点数（和 C 比没有双精度数 double）�
             (max (abs x) (abs y)))
          fuzz-factor)))
 (approx-equal foo bar)                  ; => t
-{% endhighlight %}
+```
 
 还有一个测试数字是否相等的函数 eql，这是函数不仅测试数字的值是否相等，还测试数字类型是否一致，比如：
 
-{% highlight cl %}
+``` cl
 (= 1.0 1)                               ; => t
 (eql 1.0 1)                             ; => nil
-{% endhighlight %}
+```
 
 elisp 没有 `+=, -=, /=, *=` 这样的命令式语言里常见符号，如果你想实现类似功能的语句，只能用赋值函数 setq 来实现了。 `/=` 符号被用来作为不等于的测试了。
 
@@ -95,18 +99,18 @@ elisp 没有 `+=, -=, /=, *=` 这样的命令式语言里常见符号，如果�
 
 没有 `++` 和 `--` 操作了，类似的两个函数是 1+ 和 1-。可以用 setq 赋值来代替 `++` 和 `--`：
 
-{% highlight cl %}
+``` cl
 (setq foo 10)                           ; => 10
 (setq foo (1+ foo))                     ; => 11
 (setq foo (1- foo))                     ; => 10
-{% endhighlight %}
+```
 
 注：可能有人看过有 incf 和 decf 两个实现 ++ 和 `--` 操作。这两个宏是可以用的。这两个宏是 Common Lisp 里的，emacs 有模拟的 Common Lisp 的库 cl。但是 RMS 认为最好不要使用这个库。但是你可以在你的 elisp 包中使用这两个宏，只要在文件头写上：
 
-{% highlight cl %}
+``` cl
 (eval-when-compile
   (require 'cl))
-{% endhighlight %}
+```
 
 由于 incf 和 decf 是两个宏，所以这样写不会在运行里导入 cl 库。有点离题是，总之一句话，教主说不好的东西，我们最好不要用它。其它无所谓，只可惜了两个我最常用的函数 remove-if 和 remove-if-not。不过如果你也用 emms 的话，可以在 emms-compat 里找到这两个函数的替代品。
 
@@ -114,16 +118,17 @@ abs 取数的绝对值。
 
 有两个取整的函数，一个是符号 %，一个是函数 mod。这两个函数有什么差别呢？一是 % 的第个参数必须是整数，而 mod 的第一个参数可以是整数也可以是浮点数。二是即使对相同的参数，两个函数也不一定有相同的返回值：
 
-{% highlight cl %}
+``` cl
 (+ (% DIVIDEND DIVISOR)
    (* (/ DIVIDEND DIVISOR) DIVISOR))
-{% endhighlight %}
+```
 
 和 DIVIDEND 是相同的。而：
-{% highlight cl %}
+
+``` cl
 (+ (mod DIVIDEND DIVISOR)
    (* (floor DIVIDEND DIVISOR) DIVISOR))
-{% endhighlight %}
+```
 
 和 DIVIDEND 是相同的。
 
@@ -136,7 +141,8 @@ random 可以产生随机数。可以用 (random t) 来产生一个新种子。�
 位运算这样高级的操作我就不说了，自己看 `info elisp - Bitwise Operations on Integers` 吧。
 
 ## 函数列表 ##
-{% highlight cl %}
+
+``` cl
 ;; 测试函数
 (integerp OBJECT)
 (floatp OBJECT)
@@ -181,11 +187,13 @@ random 可以产生随机数。可以用 (random t) 来产生一个新种子。�
 (logb ARG)
 ;; 随机数
 (random &optional N)
-{% endhighlight %}
+```
 
 ## 变量列表 ##
 
-    most-positive-fixnum
-    most-negative-fixnum
+``` cl
+most-positive-fixnum
+most-negative-fixnum
+```
 
 

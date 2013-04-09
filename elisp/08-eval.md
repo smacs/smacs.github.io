@@ -15,21 +15,23 @@ title: 求值规则
 
 第三种表达式是列表表达式。而列表表达式又可以根据第一个元素分为函数调用、宏调用和特殊表达式（special form）三种。列表的第一个表达式如果是一个符号，解释器会查找这个表达式的函数值。如果函数值是另一个符号，则会继续查找这个符号的函数值。这称为“symbol function indirection”。最后直到某个符号的函数值是一个 lisp 函数（lambda 表达式）、byte-code 函数、原子函数（primitive function）、宏、特殊表达式或 autoload 对象。如果不是这些类型，比如某个符号的函数值是前面出现的某个符号导致无限循环，或者某个符号函数值为空，都会导致一个错误 invalid-function。
 
-这个函数显示 indirection function：
-{% highlight cl %}
+这个函数显示 indirection function
+
+``` cl
 (symbol-function 'car)                  ; => #<subr car>
 (fset 'first 'car)                      ; => car
 (fset 'erste 'first)                    ; => first
 (erste '(1 2 3))                        ; => 1
-{% endhighlight %}
+```
 
 对于第一个元素是 lisp 函数对象、byte-code 对象和原子函数时，这个列表也称为函数调用（funtion call）。对这样的列表求值时，先对列表中其它元素先求值，求值的结果作为函数调用的真正参数。然后使用 apply 函数用这些参数调用函数。如果函数是用 lisp 写的，可以理解为把参数和变量绑定到函数后，对函数体顺序求值，返回最后一个 form 的值。
 
-如果第一个元素是一个宏对象，列表里的其它元素不会立即求值，而是根据宏定义进行扩展。如果扩展后还是一个宏调用，则会继续扩展下去，直到扩展的结果不再是一个宏调用为止。例如：
-{% highlight cl %}
+如果第一个元素是一个宏对象，列表里的其它元素不会立即求值，而是根据宏定义进行扩展。如果扩展后还是一个宏调用，则会继续扩展下去，直到扩展的结果不再是一个宏调用为止。例如
+
+``` cl
 (defmacro cadr (x)
   (list 'car (list 'cdr x)))
-{% endhighlight %}
+```
 
 这样 `(cadr (assq 'handler list))` 扩展后成为 `(car (cdr (assq 'handler list)))`。
 
@@ -37,7 +39,7 @@ title: 求值规则
 
 最后用这个伪代码来说明一下 elisp 中的求值规则：
 
-{% highlight cl %}
+``` cl
 (defun (eval exp)
   (cond
    ((numberp exp) exp)
@@ -50,6 +52,4 @@ title: 求值规则
     (apply (car exp) (cdr exp)))
    (t
     (error "Unknown expression type -- EVAL %S" exp))))
-{% endhighlight %}
-
-
+```
