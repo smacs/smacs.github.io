@@ -500,6 +500,7 @@ article .entry-content pre {
   border: 1px solid #dbdbdb;
   margin-top: 15px;
   padding: 5px 10px;
+  font-weight: bold;
   font-family: "Menlo", "Monaco", "Lucida Console", "Consolas", "Andale Mono", "Courier New", "monospace";
   overflow-x: auto;
   -webkit-box-shadow: inset 0 0 10px #ebebeb;
